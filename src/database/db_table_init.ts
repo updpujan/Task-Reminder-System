@@ -8,6 +8,7 @@ export const tableExists = async () => {
             name VARCHAR(50) NOT NULL,
             email VARCHAR(100) UNIQUE NOT NULL,
             role VARCHAR(10) NOT NULL DEFAULT 'user' CHECK (role IN ('user','admin')),
+            password VARCHAR(100) NOT NULL,
             created_at TIMESTAMPTZ NOT NULL DEFAULT now());`);
 
     await pool.query(`CREATE TABLE IF NOT EXISTS tasks(

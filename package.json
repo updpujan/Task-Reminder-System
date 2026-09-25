@@ -38,6 +38,8 @@
     "@types/node": "^26.6.2",
     "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.23.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.9",
@@ -47,7 +49,8 @@
   },
   "allowScripts": {
     "esbuild@0.28.2": true,
-    "bcrypt@6.0.0": true
+    "bcrypt@6.0.0": true,
+    "@scarf/scarf@1.4.0": true
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -56,6 +59,9 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "node-cron": "^4.6.0",
-    "pg": "^8.23.0"
+    "pg": "^8.23.0",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.6.5"
   }
 }
