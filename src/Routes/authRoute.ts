@@ -1,7 +1,10 @@
 import express from 'express';
 import registerValidation from '../middleware/registerValidationMiddleware.js';
 import emailCheck from '../middleware/userEmailCheck.js';
-import { registration } from '../controller/authController.js';
+import {
+  registration,
+  login /*logout*/,
+} from '../controller/authController.js';
 
 const route = express.Router();
 
@@ -107,6 +110,7 @@ const route = express.Router();
  *                   example: User already exists.
  */
 route.post('/register', registerValidation, emailCheck, registration);
-//route.post('/login',)
+route.post('/login', login);
+//route.post('/logout',logout);
 
 export default route;
