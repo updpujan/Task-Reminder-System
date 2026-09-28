@@ -174,7 +174,7 @@ route.post('/register', registerValidation, emailCheck, registration);
  *                   example: Login failed
  *                 errors:
  *                   type: string
- *                   example: Invalid Request: no email or password
+ *                   example: Invalid Request- no email or password
  *
  *       '401':
  *         description: Invalid email or password.

@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import dataBaseInit from '../database/db_init.js';
+//import dataBaseInit from '../database/db_init.js';
 import 'dotenv/config';
 
 export const pool = new Pool({
@@ -13,10 +13,12 @@ export const pool = new Pool({
 const databaseConnection = async () => {
   try {
     await pool.query('SELECT 1');
-    console.log('Database Connected.');
+    return 200;
   } catch (err) {
     console.log(`Error: ${err}`);
-    await dataBaseInit();
+    return 503;
+
+    //await dataBaseInit();
   }
 };
 
