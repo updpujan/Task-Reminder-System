@@ -4,6 +4,7 @@ import { swaggerSpec } from './config/swagger.js';
 
 import authRoute from './Routes/authRoute.js';
 import healthCheck from './Routes/healthRoute.js';
+import tasks from './Routes/tasksRoute.js';
 
 const app = express();
 app.use(express.json());
@@ -11,5 +12,6 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/', authRoute);
 app.use('/', healthCheck);
+app.use('/', tasks);
 
 export default app;
