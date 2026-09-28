@@ -9,6 +9,8 @@ const route = express.Router();
  *   get:
  *     summary: Check server and database health
  *     description: Checks whether the application server and PostgreSQL database are available.
+ *     tags:
+ *       - HealthCheck
  *
  *     responses:
  *       '200':

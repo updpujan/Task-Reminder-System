@@ -14,6 +14,8 @@ const route = express.Router();
  *   post:
  *     summary: Register a new user
  *     description: Creates a new user account.
+ *     tags:
+ *      - Authentication
  *
  *     requestBody:
  *       required: true
@@ -117,6 +119,8 @@ route.post('/register', registerValidation, emailCheck, registration);
  *   post:
  *     summary: Login a user
  *     description: Authenticates a user using their email and password and returns a JWT access token.
+ *     tags:
+ *      - Authentication
  *
  *     requestBody:
  *       required: true

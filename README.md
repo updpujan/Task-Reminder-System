@@ -1,3 +1,11 @@
 # Task-Reminder-System
 
-Task Reminder System project that creates and sends the reminder to the user. Build using node.js + typescript + PostgreSql
+A backend API for managing users, tasks, and reminders.
+
+## Description
+
+Task Reminder System is a Node.js backend application that provides
+APIs for user authentication, task management, and reminders.
+
+The application is built using TypeScript and Express.js and uses
+PostgreSQL as the database.
