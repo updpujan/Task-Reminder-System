@@ -84,3 +84,26 @@ export const getUserTaskByID = async (req: Request, res: Response) => {
     data: response.data,
   });
 };
+
+export const getAllTasks = async (req: Request, res: Response) => {
+  const response = await taskServices.getAllTasks();
+  if (response.status === 503) {
+    return res.status(503).json({
+      success: false,
+      message: response.message,
+      error: response.error,
+    });
+  } else if (response.status === 404) {
+    return res.status(404).json({
+      success: false,
+      message: response.message,
+      data: response.data, //empty array
+    });
+  }
+
+  return res.status(200).json({
+    sucess: true,
+    message: response.message,
+    data: response.data,
+  });
+};

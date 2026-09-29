@@ -68,3 +68,17 @@ export const getUserTaskById = async (userId: number, taskId: number) => {
     return { status: 503, message: 'Database Service Unavliable', error: err };
   }
 };
+
+export const getAllTasks = async () => {
+  try {
+    const result = await pool.query('SELECT * FROM tasks;');
+    return {
+      status: result.rowCount == 0 ? 404 : 200,
+      message:
+        result.rowCount == 0 ? 'Request resouce not found' : 'Sucess with data',
+      data: result.rows,
+    };
+  } catch (err) {
+    return { status: 503, message: 'Database Service Unavliable', error: err };
+  }
+};

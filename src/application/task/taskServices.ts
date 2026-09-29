@@ -12,3 +12,7 @@ export const getUserTasks = (id: number) => {
 export const getTaskById = (userId: number, taskId: number) => {
   return taskrepo.getUserTaskById(userId, taskId);
 };
+
+export const getAllTasks = () => {
+  return taskrepo.getAllTasks();
+};
