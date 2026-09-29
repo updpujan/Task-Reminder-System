@@ -125,8 +125,5 @@ export const deleteTask = async (req: Request, res: Response) => {
     });
   }
 
-  return res.status(204).json({
-    sucess: true,
-    message: response.message,
-  });
+  return res.status(204).send();
 };

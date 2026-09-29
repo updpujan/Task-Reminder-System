@@ -428,5 +428,70 @@ route.get('/gettask/:id', userProtection, getUserTaskByID);
  */
 route.get('/getAllTAsks', userProtection, adminProtection, getAllTasks);
 
+/**
+ * @swagger
+ * /deleteTask/{id}:
+ *   delete:
+ *     summary: Delete a task
+ *     description: Deletes a task belonging to the authenticated user.
+ *     tags:
+ *       - Tasks
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the task to delete
+ *         schema:
+ *           type: integer
+ *           example: 9
+ *     responses:
+ *       204:
+ *         description: Task deleted successfully. No response body is returned.
+ *
+ *       401:
+ *        description: Unauthorized. JWT token is missing or invalid.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                success:
+ *                  type: boolean
+ *                  example: false
+ *                message:
+ *                  type: string
+ *                  example: Unauthorized
+ *
+ *       404:
+ *         description: Task not found or does not belong to the authenticated user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Request resource not found
+ *
+ *       503:
+ *         description: Database service unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Database Service Unavailable
+ */
 route.delete('/deleteTask/:id', userProtection, deleteTask);
+
 export default route;
