@@ -59,6 +59,7 @@ CREATE TABLE public.tasks (
     repeat character varying(20) DEFAULT 'off'::character varying NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    next_reminder_at timestamp with time zone,
     CONSTRAINT tasks_repeat_check CHECK (((repeat)::text = ANY ((ARRAY['off'::character varying, 'minute'::character varying, 'hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'year'::character varying])::text[]))),
     CONSTRAINT tasks_status_check CHECK (((status)::text = ANY ((ARRAY['enabled'::character varying, 'disabled'::character varying])::text[])))
 );
@@ -205,4 +206,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('003'),
     ('004'),
     ('005'),
-    ('006');
+    ('006'),
+    ('007');
