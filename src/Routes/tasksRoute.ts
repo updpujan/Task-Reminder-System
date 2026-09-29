@@ -7,6 +7,7 @@ import {
   getUserTaskByID,
   getAllTasks,
   deleteTask,
+  updateTask,
 } from '../controller/TaskController.js';
 
 const route = express.Router();
@@ -493,5 +494,160 @@ route.get('/getAllTAsks', userProtection, adminProtection, getAllTasks);
  *                   example: Database Service Unavailable
  */
 route.delete('/deleteTask/:id', userProtection, deleteTask);
+
+/**
+ * @swagger
+ * /updateTask/{id}:
+ *   patch:
+ *     summary: Update a task
+ *     description: Updates one or more fields of a task belonging to the authenticated user.
+ *     tags:
+ *       - Tasks
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the task to update
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               task_name:
+ *                 type: string
+ *                 example: Complete Node.js Backend
+ *               task_description:
+ *                 type: string
+ *                 nullable: true
+ *                 example: Finish the PATCH API
+ *               status:
+ *                 type: string
+ *                 enum: [enabled, disabled]
+ *                 example: enabled
+ *               reminder_date:
+ *                 type: string
+ *                 format: date
+ *                 nullable: true
+ *                 example: "2026-10-05"
+ *               reminder_time:
+ *                 type: string
+ *                 nullable: true
+ *                 example: "18:30:00"
+ *               timezone:
+ *                 type: string
+ *                 example: Asia/Kathmandu
+ *               repeat:
+ *                 type: string
+ *                 enum: [off, minute, hour, day, week, month, year]
+ *                 example: week
+ *               is_active:
+ *                 type: boolean
+ *                 example: true
+ *
+ *     responses:
+ *       200:
+ *         description: Task updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: task updated successfully
+ *                 updated_row:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Task'
+ *
+ *       400:
+ *         description: Invalid request body.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Invalid Request body
+ *                 error:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example:
+ *                     - Invalid repeat value
+ *
+ *       401:
+ *         description: Authentication failed.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: User is not authenticated
+ *
+ *       404:
+ *         description: Task not found or does not belong to the authenticated user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: task not found
+ *
+ *       500:
+ *         description: JWT secret is not configured.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: JWT secret is not configured
+ *
+ *       503:
+ *         description: Database service is unavailable.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Database Service Unavailable
+ */
+route.patch('/updateTask/:id', userProtection, updateTask);
 
 export default route;

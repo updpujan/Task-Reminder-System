@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CreateTaskInput } from '../model/taskModel.js';
 import { createTaskSchema } from '../schema/task/taskSchema.js';
+import { updateTaskSchema } from '../schema/task/updateTaskSchemea.js';
 import * as taskServices from '../application/task/taskServices.js';
 
 export const createTask = async (req: Request, res: Response) => {
@@ -126,4 +127,37 @@ export const deleteTask = async (req: Request, res: Response) => {
   }
 
   return res.status(204).send();
+};
+
+export const updateTask = async (req: Request, res: Response) => {
+  const tId = Number(req.params.id);
+  const uId = Number(req.user?.sub);
+  const result = updateTaskSchema.safeParse(req.body);
+  if (result.success === false) {
+    return res.status(400).json({
+      sucess: false,
+      message: 'Invalid Request body',
+      error: result.error.issues.map((err) => err.message),
+    });
+  }
+  const response = await taskServices.updateTask(uId, tId, result.data);
+  if (response.status === 200) {
+    return res.status(200).json({
+      sucess: true,
+      message: response.message,
+      updated_row: response.data,
+    });
+  } else {
+    if (response.status === 404) {
+      return res.status(404).json({
+        sucess: false,
+        mesage: response.message,
+      });
+    }
+    return res.status(503).json({
+      sucess: false,
+      message: response.message,
+      error: response.error,
+    });
+  }
 };

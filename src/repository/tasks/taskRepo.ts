@@ -1,5 +1,6 @@
 import { pool } from '../../config/databaseConnection.js';
 import { CreateTaskInput } from '../../model/taskModel.js';
+import { UpdateTaskInput } from '../../schema/task/updateTaskSchemea.js';
 
 export const createTask = async (taskdata: CreateTaskInput) => {
   const client = await pool.connect();
@@ -97,5 +98,48 @@ export const deleteTask = async (user_id: number, task_id: number) => {
     };
   } catch (err) {
     return { status: 503, message: 'Database Service Unavliable', error: err };
+  }
+};
+
+export const updateTask = async (
+  uId: number,
+  tId: number,
+  data: UpdateTaskInput,
+) => {
+  let client;
+  try {
+    client = await pool.connect();
+    await client.query('BEGIN');
+    for (const [key, value] of Object.entries(data)) {
+      const res = await client.query(
+        `UPDATE tasks SET ${key} = $1 WHERE user_id = $2 AND task_id = $3;`,
+        [value, uId, tId],
+      );
+      if (res.rowCount == 0) {
+        await client.query('ROLLBACK');
+        return {
+          status: 404,
+          message: 'task not found',
+        };
+      }
+    }
+    await client.query('COMMIT');
+    const result = await pool.query(
+      'SELECT * FROM tasks WHERE user_id = $1 AND task_id = $2;',
+      [uId, tId],
+    );
+    return {
+      status: 200,
+      message: 'task updated sucessfully',
+      data: result.rows,
+    };
+  } catch (err) {
+    return {
+      status: 503,
+      message: 'Database Service Unavaliable',
+      error: err,
+    };
+  } finally {
+    if (client) client.release();
   }
 };

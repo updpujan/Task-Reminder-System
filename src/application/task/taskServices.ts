@@ -1,5 +1,6 @@
 import * as taskrepo from '../../repository/tasks/taskRepo.js';
 import { CreateTaskInput } from '../../model/taskModel.js';
+import { UpdateTaskInput } from '../../schema/task/updateTaskSchemea.js';
 
 export const createTask = (task: CreateTaskInput) => {
   return taskrepo.createTask(task);
@@ -19,4 +20,8 @@ export const getAllTasks = () => {
 
 export const deleteTask = (uid: number, tid: number) => {
   return taskrepo.deleteTask(uid, tid);
+};
+
+export const updateTask = (uid: number, tid: number, data: UpdateTaskInput) => {
+  return taskrepo.updateTask(uid, tid, data);
 };
