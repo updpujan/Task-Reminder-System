@@ -15,6 +15,20 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: update_updated_at_column(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -39,12 +53,12 @@ CREATE TABLE public.tasks (
     task_description text,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     status character varying(10) DEFAULT 'enabled'::character varying NOT NULL,
-    is_deleted boolean DEFAULT false NOT NULL,
     reminder_date date,
     reminder_time time without time zone,
     timezone character varying(100) DEFAULT 'UTC'::character varying NOT NULL,
     repeat character varying(20) DEFAULT 'off'::character varying NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT tasks_repeat_check CHECK (((repeat)::text = ANY ((ARRAY['off'::character varying, 'minute'::character varying, 'hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'year'::character varying])::text[]))),
     CONSTRAINT tasks_status_check CHECK (((status)::text = ANY ((ARRAY['enabled'::character varying, 'disabled'::character varying])::text[])))
 );
@@ -81,6 +95,7 @@ CREATE TABLE public.users (
     role character varying(10) DEFAULT 'user'::character varying NOT NULL,
     password character varying(100) NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT users_role_check CHECK (((role)::text = ANY ((ARRAY['user'::character varying, 'admin'::character varying])::text[])))
 );
 
@@ -152,6 +167,20 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: tasks tasks_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER tasks_updated_at BEFORE UPDATE ON public.tasks FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: users users_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER users_updated_at BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
 -- Name: tasks tasks_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -174,4 +203,6 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('001'),
     ('002'),
     ('003'),
-    ('004');
+    ('004'),
+    ('005'),
+    ('006');
