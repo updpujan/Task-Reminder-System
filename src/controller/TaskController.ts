@@ -107,3 +107,26 @@ export const getAllTasks = async (req: Request, res: Response) => {
     data: response.data,
   });
 };
+
+export const deleteTask = async (req: Request, res: Response) => {
+  const task_id = Number(req.params.id);
+  const user_id = Number(req.user?.sub);
+  const response = await taskServices.deleteTask(user_id, task_id);
+  if (response.status === 503) {
+    return res.status(503).json({
+      success: false,
+      message: response.message,
+      error: response.error,
+    });
+  } else if (response.status === 404) {
+    return res.status(404).json({
+      success: false,
+      message: response.message,
+    });
+  }
+
+  return res.status(204).json({
+    sucess: true,
+    message: response.message,
+  });
+};

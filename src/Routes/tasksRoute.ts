@@ -6,6 +6,7 @@ import {
   getAllUserTasks,
   getUserTaskByID,
   getAllTasks,
+  deleteTask,
 } from '../controller/TaskController.js';
 
 const route = express.Router();
@@ -427,4 +428,5 @@ route.get('/gettask/:id', userProtection, getUserTaskByID);
  */
 route.get('/getAllTAsks', userProtection, adminProtection, getAllTasks);
 
+route.delete('/deleteTask/:id', userProtection, deleteTask);
 export default route;

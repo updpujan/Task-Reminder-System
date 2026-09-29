@@ -16,3 +16,7 @@ export const getTaskById = (userId: number, taskId: number) => {
 export const getAllTasks = () => {
   return taskrepo.getAllTasks();
 };
+
+export const deleteTask = (uid: number, tid: number) => {
+  return taskrepo.deleteTask(uid, tid);
+};

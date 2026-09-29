@@ -82,3 +82,20 @@ export const getAllTasks = async () => {
     return { status: 503, message: 'Database Service Unavliable', error: err };
   }
 };
+
+export const deleteTask = async (user_id: number, task_id: number) => {
+  try {
+    const result = await pool.query(
+      'DELETE FROM tasks WHERE user_id = $1 AND task_id = $2;',
+      [user_id, task_id],
+    );
+    return {
+      status: result.rowCount == 0 ? 404 : 204,
+      message:
+        result.rowCount == 0 ? 'Request resouce not found' : 'Delete sucess',
+      data: result.rows,
+    };
+  } catch (err) {
+    return { status: 503, message: 'Database Service Unavliable', error: err };
+  }
+};
