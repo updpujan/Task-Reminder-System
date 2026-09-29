@@ -20,44 +20,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: reminders; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.reminders (
-    reminder_id integer NOT NULL,
-    task_id integer NOT NULL,
-    reminder_date date,
-    reminder_time time without time zone NOT NULL,
-    timezone character varying(100) DEFAULT 'UTC'::character varying NOT NULL,
-    repeat character varying(20) DEFAULT 'off'::character varying NOT NULL,
-    next_run_at timestamp with time zone NOT NULL,
-    is_active boolean DEFAULT true NOT NULL,
-    created_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT reminders_repeat_check CHECK (((repeat)::text = ANY ((ARRAY['off'::character varying, 'minute'::character varying, 'hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'year'::character varying])::text[])))
-);
-
-
---
--- Name: reminders_reminder_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.reminders_reminder_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: reminders_reminder_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.reminders_reminder_id_seq OWNED BY public.reminders.reminder_id;
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -78,6 +40,12 @@ CREATE TABLE public.tasks (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     status character varying(10) DEFAULT 'enabled'::character varying NOT NULL,
     is_deleted boolean DEFAULT false NOT NULL,
+    reminder_date date,
+    reminder_time time without time zone,
+    timezone character varying(100) DEFAULT 'UTC'::character varying NOT NULL,
+    repeat character varying(20) DEFAULT 'off'::character varying NOT NULL,
+    is_active boolean DEFAULT true NOT NULL,
+    CONSTRAINT tasks_repeat_check CHECK (((repeat)::text = ANY ((ARRAY['off'::character varying, 'minute'::character varying, 'hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'year'::character varying])::text[]))),
     CONSTRAINT tasks_status_check CHECK (((status)::text = ANY ((ARRAY['enabled'::character varying, 'disabled'::character varying])::text[])))
 );
 
@@ -138,13 +106,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: reminders reminder_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.reminders ALTER COLUMN reminder_id SET DEFAULT nextval('public.reminders_reminder_id_seq'::regclass);
-
-
---
 -- Name: tasks task_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -156,14 +117,6 @@ ALTER TABLE ONLY public.tasks ALTER COLUMN task_id SET DEFAULT nextval('public.t
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
-
-
---
--- Name: reminders reminders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.reminders
-    ADD CONSTRAINT reminders_pkey PRIMARY KEY (reminder_id);
 
 
 --
@@ -199,14 +152,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: reminders reminders_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.reminders
-    ADD CONSTRAINT reminders_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.tasks(task_id);
-
-
---
 -- Name: tasks tasks_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -228,4 +173,5 @@ ALTER TABLE ONLY public.tasks
 INSERT INTO public.schema_migrations (version) VALUES
     ('001'),
     ('002'),
-    ('003');
+    ('003'),
+    ('004');
