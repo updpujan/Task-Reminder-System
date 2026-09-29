@@ -1,11 +1,9 @@
 import express from 'express';
 import userProtection from '../middleware/authMiddleware.js';
-import adminProtection from '../middleware/adminAuthMiddleware.js';
 import {
   createTask,
   getAllUserTasks,
   getUserTaskByID,
-  getAllTasks,
   deleteTask,
   updateTask,
 } from '../controller/TaskController.js';
@@ -316,118 +314,6 @@ route.get('/getAllUserTasks', userProtection, getAllUserTasks);
  *                   example: Request resouce not found
  */
 route.get('/gettask/:id', userProtection, getUserTaskByID);
-
-/**
- * @swagger
- * /getAllTasks:
- *   get:
- *     summary: Get all tasks
- *     description: Returns all tasks in the system. Only authenticated users with the admin role can access this endpoint.
- *     tags:
- *       - Admin
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: All tasks retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Success with data
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Task'
- *             examples:
- *               withData:
- *                 summary: Tasks found
- *                 value:
- *                   success: true
- *                   message: Success with data
- *                   data:
- *                     - task_id: 9
- *                       user_id: 1
- *                       task_name: Complete Node.js backend project
- *                       task_description: Finish the task and reminder API
- *                       created_at: "2026-09-28T09:31:30.694Z"
- *                       status: enabled
- *                       is_deleted: false
- *                       reminder_date: "2026-09-28T18:15:00.000Z"
- *                       reminder_time: "18:30:00"
- *                       timezone: Asia/Kathmandu
- *                       repeat: day
- *                       is_active: true
- *               noData:
- *                 summary: No tasks found
- *                 value:
- *                   success: true
- *                   message: Success but no data
- *                   data: []
- *
- *       401:
- *         description: Unauthorized. JWT token is missing or invalid.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Unauthorized
- *
- *       403:
- *         description: Forbidden. The authenticated user does not have the admin role.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Forbidden- admin role required
- *
- *       404:
- *         description: Task not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Request resource not found
- *
- *       503:
- *         description: Database service unavailable
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 message:
- *                   type: string
- *                   example: Database Service Unavailable
- */
-route.get('/getAllTAsks', userProtection, adminProtection, getAllTasks);
 
 /**
  * @swagger
