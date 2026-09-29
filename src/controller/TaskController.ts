@@ -40,3 +40,47 @@ export const createTask = async (req: Request, res: Response) => {
       .json({ status: 500, message: 'Failed to create Task' });
   }
 };
+
+export const getAllUserTasks = async (req: Request, res: Response) => {
+  const user_id = Number(req.user?.sub);
+  const response = await taskServices.getUserTasks(user_id);
+  if (response.status === 503) {
+    return res.status(503).json({
+      success: false,
+      message: response.message,
+      error: response.error,
+    });
+  }
+
+  return res.status(200).json({
+    sucess: true,
+    message: response.message,
+    data: response.data,
+  });
+};
+
+export const getUserTaskByID = async (req: Request, res: Response) => {
+  const user_id = Number(req.user?.sub);
+  const task_id = Number(req.params.id);
+
+  const response = await taskServices.getTaskById(user_id, task_id);
+  if (response.status === 503) {
+    return res.status(503).json({
+      success: false,
+      message: response.message,
+      error: response.error,
+    });
+  } else if (response.status === 404) {
+    return res.status(404).json({
+      success: false,
+      message: response.message,
+      data: response.data, //empty array
+    });
+  }
+
+  return res.status(200).json({
+    sucess: true,
+    message: response.message,
+    data: response.data,
+  });
+};

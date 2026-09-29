@@ -36,3 +36,35 @@ export const createTask = async (taskdata: CreateTaskInput) => {
     client.release();
   }
 };
+
+export const getUserTasks = async (id: number) => {
+  try {
+    const result = await pool.query('SELECT * FROM tasks WHERE user_id = $1;', [
+      id,
+    ]);
+    return {
+      status: 200,
+      message: result.rowCount == 0 ? 'Sucess but no data' : 'Sucess with data',
+      data: result.rows,
+    };
+  } catch (err) {
+    return { status: 503, message: 'Database Service Unavliable', error: err };
+  }
+};
+
+export const getUserTaskById = async (userId: number, taskId: number) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM tasks WHERE user_id =$1 AND task_id =$2;',
+      [userId, taskId],
+    );
+    return {
+      status: result.rowCount == 0 ? 404 : 200,
+      message:
+        result.rowCount == 0 ? 'Request resouce not found' : 'Sucess with data',
+      data: result.rows,
+    };
+  } catch (err) {
+    return { status: 503, message: 'Database Service Unavliable', error: err };
+  }
+};
