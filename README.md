@@ -5,7 +5,6 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/updpujan/Task-Reminder-System"><img src="https://img.shields.io/badge/status-in%20development-orange" alt="Project status: in development"></a>
   <img src="https://img.shields.io/badge/Node.js-ESM-339933?logo=node.js&logoColor=white" alt="Node.js ESM">
   <img src="https://img.shields.io/badge/TypeScript-6.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white" alt="Express 5">
@@ -128,7 +127,7 @@ erDiagram
         timestamptz next_reminder_at
         timestamptz created_at
         timestamp updated_at
-    }}
+    }
 ```
 
 `reminders` was used in the early migration history, then merged into `tasks` by
