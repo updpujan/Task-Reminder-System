@@ -13,7 +13,8 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky",
-    "db:migrate": "DBMATE_MIGRATIONS_DIR=database/migrations dbmate up"
+    "db:migrate": "DBMATE_MIGRATIONS_DIR=database/migrations dbmate up",
+    "seed": "tsx database/seeds/seedUser.ts"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",
