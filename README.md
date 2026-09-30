@@ -21,13 +21,12 @@
 - [Installation and local setup](#installation-and-local-setup)
 - [Environment variables](#environment-variables)
 - [Database and migrations](#database-and-migrations)
+- [Seed users](#seed-users)
 - [API documentation](#api-documentation)
 - [API examples](#api-examples)
 - [Reminder behavior](#reminder-behavior)
 - [Development commands](#development-commands)
 - [Troubleshooting](#troubleshooting)
-- [Security notes](#security-notes)
-- [Project status and contributing](#project-status-and-contributing)
 
 ## What this project does
 
@@ -130,10 +129,6 @@ erDiagram
     }
 ```
 
-`reminders` was used in the early migration history, then merged into `tasks` by
-`004_merge_reminders_into_tasks.sql`. A fresh database ends with `users` and
-`tasks`, plus dbmate's `schema_migrations` table.
-
 ## Technology and repository layout
 
 | Area                   | Location                                                                 | Responsibility                                                    |
@@ -154,8 +149,8 @@ erDiagram
 
 - Node.js compatible with the repository's current TypeScript and dependency versions.
 - npm.
-- PostgreSQL (the checked-in schema was dumped from PostgreSQL 18.6).
-- [dbmate](https://github.com/amacneil/dbmate) installed and available on `PATH`.
+- PostgreSQL (PostgreSQL 18.6).
+- [dbmate](https://github.com/amacneil/dbmate) .
 - A PostgreSQL database and a role that can create and alter its tables.
 
 ## Installation and local setup
@@ -188,6 +183,16 @@ createdb task_reminder
 export DATABASE_URL="postgres://postgres:change-me@localhost:5432/task_reminder?sslmode=disable"
 npm run db:migrate
 ```
+
+Seed the development accounts after the migrations have completed:
+
+```bash
+npm run seed
+```
+
+The seed is safe to run more than once because existing users with the same
+email are skipped. Run it after creating or resetting the database, and before
+using the protected API.
 
 Start the development server:
 
@@ -233,10 +238,6 @@ Expected healthy response:
 | `JWT_EXPIRE_ACCESS_TOKEN` | Yes        | `1h`             | `jsonwebtoken` expiration value, such as `1h` or `7d` |
 | `DATABASE_URL`            | For dbmate | `postgres://...` | Connection URL consumed by dbmate                     |
 
-The application and dbmate currently use different database configuration
-interfaces: the application reads `DB_*` variables, while dbmate conventionally
-reads `DATABASE_URL`. Keep both configured for local development and deployment.
-
 ## Database and migrations
 
 Migration files are in [`database/migrations/`](./database/migrations/) and use
@@ -260,17 +261,6 @@ export DATABASE_URL="postgres://postgres:change-me@localhost:5432/task_reminder?
 npm run db:migrate
 ```
 
-Before changing a shared or production database:
-
-1. Back up the database.
-2. Review the migration's `up` and `down` SQL.
-3. Apply it in a staging environment first.
-4. Confirm the application and `/health` endpoint still work.
-
-Do not edit an already-applied migration. Add a new numbered migration so the
-schema history remains reproducible. `db/schema.sql` is a snapshot, not a
-replacement for the migration history.
-
 ## API documentation
 
 Swagger UI is generated from the OpenAPI comments in the route files and is
@@ -283,6 +273,25 @@ http://localhost:3000/api-docs
 The OpenAPI definition is assembled in
 [`src/config/swagger.ts`](./src/config/swagger.ts). Use Swagger UI's **Authorize**
 button with the JWT returned by `/login` to try protected endpoints.
+
+## Seed users
+
+`npm run seed` executes
+[`database/seeds/seedUser.ts`](./database/seeds/seedUser.ts). It inserts these
+development-only accounts with bcrypt-hashed passwords:
+
+| Name       | Email            | Password    | Role    |
+| ---------- | ---------------- | ----------- | ------- |
+| Test Admin | `admin@test.com` | `Admin@123` | `admin` |
+| Test User  | `user@test.com`  | `User@123`  | `user`  |
+
+Use the admin account to try `/admin/getAllTasks` and `/admin/getAllUsers`, and
+the regular account to try user task endpoints. These credentials are for local
+development only. Change or remove them before deploying anywhere shared.
+
+The seed uses `ON CONFLICT (email) DO NOTHING`, so it does not overwrite an
+existing account with either email. If you need fresh test data, remove those
+specific users from a disposable development database and run the seed again.
 
 ### Authentication model
 
@@ -319,12 +328,15 @@ curl -X POST "$API_URL/register" \
 
 ### Login and save the token
 
+The examples below use the seeded regular user. Run `npm run seed` first, or
+register your own account instead.
+
 ```bash
 curl -X POST "$API_URL/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "pujan@example.com",
-    "password": "Pujan@123"
+    "email": "user@test.com",
+    "password": "User@123"
   }'
 ```
 
@@ -423,22 +435,22 @@ use `/api-docs` and the annotations in [`src/Routes/`](./src/Routes/).
 - One-time reminders (`repeat: "off"`) are cleared after being logged.
 - Recurring reminders are recalculated with Luxon in the task's `timezone` and
   stored as the next UTC occurrence.
-- Current delivery is application logging (`🔔 REMINDER!`); no email, push, or
-  external notification provider is configured.
+- Current delivery is application logging (`🔔 REMINDER!`);
 
 ## Development commands
 
-| Command                | Purpose                                              |
-| ---------------------- | ---------------------------------------------------- |
-| `npm run dev`          | Run the TypeScript server with `tsx watch`           |
-| `npm run build`        | Type-check and compile TypeScript                    |
-| `npm start`            | Run the compiled server                              |
-| `npm run db:migrate`   | Apply pending dbmate migrations                      |
-| `npm run lint`         | Run ESLint                                           |
-| `npm run lint:fix`     | Fix ESLint findings where possible                   |
-| `npm run format:check` | Check Prettier formatting                            |
-| `npm run format`       | Format the repository                                |
-| `npm test`             | Placeholder script; no test runner is configured yet |
+| Command                | Purpose                                                  |
+| ---------------------- | -------------------------------------------------------- |
+| `npm run dev`          | Run the TypeScript server with `tsx watch`               |
+| `npm run build`        | Type-check and compile TypeScript                        |
+| `npm start`            | Run the compiled server                                  |
+| `npm run db:migrate`   | Apply pending dbmate migrations                          |
+| `npm run seed`         | Insert the idempotent local admin and user test accounts |
+| `npm run lint`         | Run ESLint                                               |
+| `npm run lint:fix`     | Fix ESLint findings where possible                       |
+| `npm run format:check` | Check Prettier formatting                                |
+| `npm run format`       | Format the repository                                    |
+| `npm test`             | Placeholder script; no test runner is configured yet     |
 
 ## Troubleshooting
 
