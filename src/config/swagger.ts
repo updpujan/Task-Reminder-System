@@ -87,7 +87,21 @@ const swaggerOptions: swaggerJSDoc.Options = {
 
             repeat: {
               type: 'string',
-              enum: ['off', 'minute', 'hour', 'day', 'week', 'month', 'year'],
+              enum: [
+                'off',
+                'minute',
+                'hour',
+                'day',
+                'sunday',
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday',
+                'month',
+                'year',
+              ],
               example: 'day',
             },
 

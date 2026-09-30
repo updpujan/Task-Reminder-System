@@ -29,7 +29,21 @@ export const createTaskSchema = z.object({
     .default('UTC'),
 
   repeat: z
-    .enum(['off', 'minute', 'hour', 'day', 'week', 'month', 'year'])
+    .enum([
+      'off',
+      'minute',
+      'hour',
+      'day',
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'month',
+      'year',
+    ])
     .default('off'),
 });
 

@@ -21,7 +21,6 @@ export const createTask = async (req: Request, res: Response) => {
     task_description: req.body.task_description,
 
     status: 'enabled',
-    is_deleted: false,
 
     reminder_date: req.body.reminder_date,
     reminder_time: req.body.reminder_time,

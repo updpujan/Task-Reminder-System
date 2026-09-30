@@ -43,9 +43,26 @@ export const updateTaskSchema = z
       .optional(),
 
     repeat: z
-      .enum(['off', 'minute', 'hour', 'day', 'week', 'month', 'year'], {
-        message: 'Invalid repeat value',
-      })
+      .enum(
+        [
+          'off',
+          'minute',
+          'hour',
+          'day',
+          'sunday',
+          'monday',
+          'tuesday',
+          'wednesday',
+          'thursday',
+          'friday',
+          'saturday',
+          'month',
+          'year',
+        ],
+        {
+          message: 'Invalid repeat value',
+        },
+      )
       .optional(),
 
     is_active: z.boolean().optional(),
